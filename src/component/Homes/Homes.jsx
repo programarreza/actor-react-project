@@ -5,8 +5,9 @@ import './Homes.css';
 const Homes = () => {
 
 	const [actors, setActors] = useState([]);
-
 	const [selectedActor, setSelectedActor] = useState([]);
+	const [remaining, setRemaining] = useState(0);
+	const [totalCost, setTotalCost] = useState(0);
 
 	useEffect(() => {
 		fetch('./data.json')
@@ -14,20 +15,30 @@ const Homes = () => {
 			.then(data => setActors(data))
 	}, [])
 
-
 	const handleSelectActor = (actor) => {
 		const isExist = selectedActor.find(item => item.id == actor.id);
-		
-		if(isExist) {
+		let count = actor.salary;
+
+		if (isExist) {
 			return alert('already Booked');
 		}
-		else{
+		else {
+			selectedActor.forEach(item => {
+				count = count + item.salary;
+			})
 
+			const totalRemaining = 20000 - count;
+			
+			if(count > 20000){
+				return alert("ar hobe nah taka ses")
+			}
+			setRemaining(totalRemaining);
+
+			setTotalCost(count);
 			return setSelectedActor([...selectedActor, actor]);
 		}
 	}
 
-	// console.log(selectedActor);
 	return (
 		<main>
 			<div className='mx-12 flex'>
@@ -38,8 +49,7 @@ const Homes = () => {
 				</div>
 
 				<div className='w-1/3 border-2'>
-					{/* <h1>this is Cart</h1> */}
-					<Carts selectedActor={selectedActor}></Carts>
+					<Carts selectedActor={selectedActor} remaining={remaining} totalCost={totalCost}></Carts>
 				</div>
 			</div>
 		</main>
